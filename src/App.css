@@ -1,0 +1,500 @@
+/* App.css (FULL) */
+
+:root{
+  --bg: #ffffff;
+  --card: #ffffff;
+  --text: #1f2328;
+  --muted: #6b7280;
+  --border: #e6e1d9;
+
+  --beige: #d8c3a8;
+  --beige-hover: #cdb598;
+  --beige-press: #bda585;
+
+  --shadow: 0 10px 30px rgba(0,0,0,0.06);
+  --radius: 16px;
+}
+
+*{ box-sizing: border-box; }
+
+html, body{
+  /* height: 100%;
+  margin: 0; */
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+.app{
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ✅ sticky 헤더: content 가림 없음 */
+.topbar{
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+
+  padding: 22px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.brand{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 240px;
+}
+
+.brandMark{
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: #111;
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.brandLogo{
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  background: #fff;
+}
+
+
+
+.brandTitle{
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.1;
+}
+
+.brandSub{
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+
+/* Tabs */
+.tabs{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tab{
+  appearance: none;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: transform 0.05s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.tab:hover{
+  border-color: #d7cfc4;
+  background: #faf8f5;
+}
+.tab:active{ transform: translateY(1px); }
+
+.tab.active{
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+/* ✅ sticky라 padding-top 필요 없음 */
+.container{
+  width: min(980px, calc(100% - 32px));
+  margin: 28px auto 40px;
+}
+
+/* Card */
+.card{
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 22px;
+}
+
+@media (max-width: 640px){
+  .container{
+    padding-top: 170px;
+  }
+}
+
+.h1{
+  margin: 0 0 12px 0;
+  font-size: 28px;
+  letter-spacing: 0.2px;
+}
+
+.h3{
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  letter-spacing: 0.2px;
+}
+
+.lead{
+  margin: 0 0 18px 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #2b2f36;
+}
+
+.p{
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.muted{
+  color: var(--muted);
+  font-size: 12px;
+  margin: 6px 0 10px 0;
+}
+
+.hint{
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* Grid */
+.grid2{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 720px){
+  .grid2{ grid-template-columns: 1fr; }
+}
+
+.info{
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  background: #fff;
+}
+
+.menuBoard{
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  background: #ffffff;
+}
+
+.menuGrid{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 880px){
+  .menuGrid{ grid-template-columns: 1fr; }
+}
+
+.menuCard{
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.menuImg{
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+  background: #f4f1ec;
+}
+
+.menuCaption{ padding: 12px; }
+
+.menuCTA{
+  margin-top: 14px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ✅ Pre-Order 사진도 Home 메뉴랑 동일 */
+.sectionImg{
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: #f4f1ec;
+  display: block;
+}
+
+/* Policy */
+.policy{
+  margin: 14px 0;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: #fbfaf8;
+}
+
+/* Form */
+.form{
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.field{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.row{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 720px){
+  .row{ grid-template-columns: 1fr; }
+}
+
+label{
+  font-size: 13px;
+  color: #30343b;
+  font-weight: 600;
+}
+
+.req{
+  color: #b45309;
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+input, select, textarea{
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  background: #fff;
+  color: var(--text);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  line-height: 1.2;
+  min-height: 40px;
+}
+
+textarea{
+  resize: vertical;
+  min-height: 90px;
+}
+
+input:focus, select:focus, textarea:focus{
+  border-color: #d2bca2;
+  box-shadow: 0 0 0 4px rgba(216,195,168,0.25);
+}
+
+/* ✅ number 스피너 보이게 */
+.qtyInput,
+input[type="number"]{
+  appearance: auto;
+  -webkit-appearance: auto;
+  -moz-appearance: auto;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button{
+  -webkit-appearance: inner-spin-button;
+  opacity: 1;
+  height: auto;
+}
+
+/* Buttons */
+.actions{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.primary, .secondary{
+  border: 1px solid transparent;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.05s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.primary{
+  background: var(--beige);
+  color: #1b130a;
+  border-color: rgba(0,0,0,0.06);
+}
+.primary:hover{ background: var(--beige-hover); }
+.primary:active{ background: var(--beige-press); transform: translateY(1px); }
+
+.secondary{
+  background: #fff;
+  color: var(--text);
+  border-color: var(--border);
+}
+.secondary:hover{ background: #faf8f5; }
+.secondary:active{ transform: translateY(1px); }
+
+.primary:disabled, .secondary:disabled{
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Checkbox */
+.checkboxRow{ gap: 10px; }
+
+.checkbox{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.checkbox input{
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border-radius: 6px;
+}
+
+/* Errors */
+.error{
+  font-size: 12px;
+  color: #b91c1c;
+}
+
+.errorBox{
+  border: 1px solid rgba(185, 28, 28, 0.25);
+  background: rgba(185, 28, 28, 0.06);
+  color: #7f1d1d;
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Contact */
+.contactCenter{ text-align: center; }
+
+.contactCenter .grid2{
+  margin-top: 14px;
+  text-align: left;
+}
+
+/* Footer */
+.footer{
+  margin-top: auto;
+  border-top: 1px solid var(--border);
+  padding: 18px 16px;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+.pickupList{
+  display: grid;
+  gap: 12px;
+}
+
+.pickupItem{
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px;
+  background: #fbfaf8;
+}
+
+.pickupDay{
+  font-weight: 800;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.pickupMeta{
+  font-size: 13px;
+  line-height: 1.55;
+  color: #2b2f36;
+}
+
+.pickupAddr{
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+
+
+/* Contact: always centered even on zoom */
+.contactWrap{
+  width: 100%;
+  display: flex;
+  justify-content: center;  /* ✅ 핵심 */
+}
+
+.contactCard{
+  width: 100%;              /* ✅ 축소 시에도 컨테이너 폭 따라감 */
+  max-width: 820px;         /* ✅ 보기 좋은 최대 폭 */
+}
+
+/* 제목/설명은 가운데 */
+.contactCard .h1,
+.contactCard .lead{
+  text-align: center;
+}
+
+/* 내부 내용은 좌측 정렬 유지 */
+.contactCard .grid2{
+  width: 100%;
+  margin-top: 16px;
+}
+
+.contactCard .primary{
+  display: block;
+  margin: 14px auto 0;
+}
+
+.menuPosterWrap {
+  margin-top: 12px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: #fff;
+}
+
+.menuPosterImg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
