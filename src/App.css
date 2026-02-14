@@ -498,3 +498,35 @@ input[type="number"]::-webkit-inner-spin-button{
   height: auto;
   display: block;
 }
+
+/* ✅ Qty Stepper (mobile friendly) */
+.qtyStepper{
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  gap: 10px;
+  align-items: center;
+}
+
+.qtyBtn{
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  font-size: 22px;
+  line-height: 1;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.qtyBtn:disabled{
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* 기존 qtyInput 스타일을 그대로 쓰되,
+   iOS 줌 방지 위해 폰트 16px 권장 */
+.qtyInput{
+  height: 44px;
+  text-align: center;
+  font-size: 16px;
+}

@@ -1,4 +1,3 @@
-// App.tsx (FULL)
 import React, { useMemo, useState } from "react";
 import "./App.css";
 
@@ -113,7 +112,8 @@ function generatePickupOptions(weeksAhead = 8) {
     const sat = addDays(thisSaturday, 7 * w);
 
     // ---- 컷오프 규칙 ----
-    // w === 0 인 경우만 "이번 주" 이므로 제한 적용
+    // 목요일에 주문하면 이번주 금요일 픽업 불가
+    // 금요일에 주문하면 이번주 토요일 픽업 불가
     const blockThisWeekFriday = w === 0 && dow === 4; // Thu
     const blockThisWeekSaturday = w === 0 && dow === 5; // Fri
 
@@ -137,6 +137,58 @@ function generatePickupOptions(weeksAhead = 8) {
   return options;
 }
 
+/** ✅ iOS/Instagram 브라우저에서 number spinner가 안 떠서,
+ *  - / + 스테퍼로 수량 조절 가능하게 만든 컴포넌트
+ */
+function QtyStepper(props: {
+  value: number;
+  min?: number;
+  max?: number;
+  onChange: (next: number) => void;
+  ariaLabel?: string;
+}) {
+  const { value, min = 0, max = 999, onChange, ariaLabel } = props;
+
+  const dec = () => onChange(Math.max(min, value - 1));
+  const inc = () => onChange(Math.min(max, value + 1));
+
+  return (
+    <div className="qtyStepper" aria-label={ariaLabel}>
+      <button
+        type="button"
+        className="qtyBtn"
+        onClick={dec}
+        disabled={value <= min}
+        aria-label="Decrease"
+      >
+        −
+      </button>
+
+      <input
+        className="qtyInput"
+        inputMode="numeric"
+        pattern="[0-9]*"
+        value={String(value)}
+        onChange={(e) => {
+          const cleaned = e.target.value.replace(/[^\d]/g, "");
+          const n = cleaned === "" ? 0 : Number(cleaned);
+          if (Number.isNaN(n)) return;
+          onChange(Math.min(max, Math.max(min, n)));
+        }}
+      />
+
+      <button
+        type="button"
+        className="qtyBtn"
+        onClick={inc}
+        disabled={value >= max}
+        aria-label="Increase"
+      >
+        +
+      </button>
+    </div>
+  );
+}
 
 export default function App() {
   const [tab, setTab] = useState<Tab>("home");
@@ -278,14 +330,13 @@ export default function App() {
       };
 
       await fetch(FORM_ENDPOINT, {
-  method: "POST",
-  mode: "no-cors", // ✅ 응답을 못 읽어도 서버에는 전송됨(시트에 append 가능)
-  headers: { "Content-Type": "text/plain;charset=utf-8" },
-  body: JSON.stringify(payload),
-});
+        method: "POST",
+        mode: "no-cors", // ✅ 응답을 못 읽어도 서버에는 전송됨(시트에 append 가능)
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload),
+      });
 
-// 여기까지 왔으면 "전송 시도"는 성공한 거라 바로 thanks로 보내기
-window.location.assign("/thanks.html");
+      window.location.assign("/thanks.html");
     } catch {
       setStatus("error");
       setStatusMsg("Network error. Please check your connection and try again.");
@@ -326,24 +377,18 @@ window.location.assign("/thanks.html");
             </p>
 
             <div className="menuBoard" style={{ marginTop: 0 }}>
-  <h3 className="h3">Menu</h3>
+              <h3 className="h3">Menu</h3>
 
-  {/* ✅ 메뉴판 큰 이미지 1장 */}
-  <div className="menuPosterWrap">
-    <img
-      className="menuPosterImg"
-      src="/menu/menu-board.jpg"
-      alt="Umai Bakery Menu"
-    />
-  </div>
+              <div className="menuPosterWrap">
+                <img className="menuPosterImg" src="/menu/menu-board.jpg" alt="Umai Bakery Menu" />
+              </div>
 
-  <div className="menuCTA">
-    <button className="primary" onClick={() => goTab("order")} type="button">
-      Pre-order here →
-    </button>
-  </div>
-</div>
-
+              <div className="menuCTA">
+                <button className="primary" onClick={() => goTab("order")} type="button">
+                  Pre-order here →
+                </button>
+              </div>
+            </div>
 
             <div className="grid2 homeRow" style={{ marginTop: 14 }}>
               <div className="info">
@@ -407,124 +452,106 @@ window.location.assign("/thanks.html");
             <h1 className="h1">Pre-Order</h1>
 
             <form className="form" onSubmit={onSubmit} noValidate>
-  <div className="grid2">
-    {/* ✅ LEFT COLUMN: stack 2 boxes (same size as others) */}
-    <div style={{ display: "grid", gap: 14 }}>
-      {/* Mini Basque Burnt Cheesecake */}
-      <div className="info">
-        <h3 className="h3">Mini Basque Burnt Cheesecake (5")</h3>
-        <img
-          className="sectionImg"
-          src="/menu/basque-cheesecake.jpg"
-          alt='Mini Basque Burnt Cheesecake (5")'
-        />
+              <div className="grid2">
+                {/* LEFT COLUMN */}
+                <div style={{ display: "grid", gap: 14 }}>
+                  <div className="info">
+                    <h3 className="h3">Mini Basque Burnt Cheesecake (5")</h3>
+                    <img className="sectionImg" src="/menu/basque-cheesecake.jpg" alt='Mini Basque Burnt Cheesecake (5")' />
 
-        <div className="field">
-          <label>Original — $25</label>
-          <input
-            className="qtyInput"
-            type="number"
-            min={0}
-            value={form.cakeOriginalQty}
-            onChange={(e) => update("cakeOriginalQty", Number(e.target.value))}
-          />
-        </div>
+                    <div className="field">
+                      <label>Original — $25</label>
+                      <QtyStepper
+                        value={form.cakeOriginalQty}
+                        min={0}
+                        onChange={(n) => update("cakeOriginalQty", n)}
+                        ariaLabel="Cheesecake Original quantity"
+                      />
+                    </div>
 
-        <div className="field">
-          <label>Matcha — $28</label>
-          <input
-            className="qtyInput"
-            type="number"
-            min={0}
-            value={form.cakeMatchaQty}
-            onChange={(e) => update("cakeMatchaQty", Number(e.target.value))}
-          />
-        </div>
+                    <div className="field">
+                      <label>Matcha — $28</label>
+                      <QtyStepper
+                        value={form.cakeMatchaQty}
+                        min={0}
+                        onChange={(n) => update("cakeMatchaQty", n)}
+                        ariaLabel="Cheesecake Matcha quantity"
+                      />
+                    </div>
 
-        <div className="field">
-          <label>Chocolate — $28</label>
-          <input
-            className="qtyInput"
-            type="number"
-            min={0}
-            value={form.cakeChocolateQty}
-            onChange={(e) => update("cakeChocolateQty", Number(e.target.value))}
-          />
-        </div>
-      </div>
+                    <div className="field">
+                      <label>Chocolate — $28</label>
+                      <QtyStepper
+                        value={form.cakeChocolateQty}
+                        min={0}
+                        onChange={(n) => update("cakeChocolateQty", n)}
+                        ariaLabel="Cheesecake Chocolate quantity"
+                      />
+                    </div>
+                  </div>
 
-      {/* ✅ Dubai Strawberry Basque Mini Cake (same-size info box, placed under Mini Basque) */}
-      {/* <div className="info">
-        <h3 className="h3">Dubai Strawberry Basque Mini Cake</h3>
-        <img
-          className="sectionImg"
-          src="/menu/strawberry-basque.jpg"
-          alt="Dubai Strawberry Basque Mini Cake"
-        />
+                  {/* ✅ Dubai Strawberry Basque Mini Cake (주문 불가라 주석 유지) */}
+                  {/* <div className="info">
+                    <h3 className="h3">Dubai Strawberry Basque Mini Cake</h3>
+                    <img className="sectionImg" src="/menu/strawberry-basque.jpg" alt="Dubai Strawberry Basque Mini Cake" />
 
-        <div className="field" style={{ marginTop: 10 }}>
-          <label>Quantity — $13</label>
-          <input
-            className="qtyInput"
-            type="number"
-            min={0}
-            value={form.strawberryBasqueQty}
-            onChange={(e) => update("strawberryBasqueQty", Number(e.target.value))}
-          />
-        </div>
-      </div> */}
-    </div>
+                    <div className="field" style={{ marginTop: 10 }}>
+                      <label>Quantity — $13</label>
+                      <QtyStepper
+                        value={form.strawberryBasqueQty}
+                        min={0}
+                        onChange={(n) => update("strawberryBasqueQty", n)}
+                        ariaLabel="Strawberry Basque quantity"
+                      />
+                    </div>
+                  </div> */}
+                </div>
 
-    {/* RIGHT COLUMN: Dubai Chewy Cookies */}
-    <div className="info">
-      <h3 className="h3">Dubai Chewy Cookies</h3>
-      <img className="sectionImg" src="/menu/dubai-cookie.jpg" alt="Dubai Chewy Cookie" />
+                {/* RIGHT COLUMN */}
+                <div className="info">
+                  <h3 className="h3">Dubai Chewy Cookies</h3>
+                  <img className="sectionImg" src="/menu/dubai-cookie.jpg" alt="Dubai Chewy Cookie" />
 
-      <p className="p" style={{ marginTop: 10 }}>
-        If you want to order more than 10, please DM <b>@umai_dubai_sd</b>.
-        <br />
-        10개 이상 주문을 원하시면 <b>@umai_dubai_sd</b> 인스타그램 DM으로 연락 주세요.
-      </p>
+                  <p className="p" style={{ marginTop: 10 }}>
+                    If you want to order more than 10, please DM <b>@umai_dubai_sd</b>.
+                    <br />
+                    10개 이상 주문을 원하시면 <b>@umai_dubai_sd</b> 인스타그램 DM으로 연락 주세요.
+                  </p>
 
-      <div className="field">
-        <label>Original — $8</label>
-        <input
-          className="qtyInput"
-          type="number"
-          min={0}
-          max={10}
-          value={form.cookieOriginalQty}
-          onChange={(e) => update("cookieOriginalQty", Number(e.target.value))}
-          onBlur={() => markTouched("maxCookie")}
-        />
-      </div>
+                  <div className="field">
+                    <label>Original — $8</label>
+                    <QtyStepper
+                      value={form.cookieOriginalQty}
+                      min={0}
+                      max={10}
+                      onChange={(n) => update("cookieOriginalQty", n)}
+                      ariaLabel="Cookie Original quantity"
+                    />
+                  </div>
 
-      <div className="field">
-        <label>Strawberry — $9.5</label>
-        <input
-          className="qtyInput"
-          type="number"
-          min={0}
-          max={10}
-          value={form.cookieStrawberryQty}
-          onChange={(e) => update("cookieStrawberryQty", Number(e.target.value))}
-          onBlur={() => markTouched("maxCookie")}
-        />
-      </div>
-    </div>
-  </div>
+                  <div className="field">
+                    <label>Strawberry — $9.5</label>
+                    <QtyStepper
+                      value={form.cookieStrawberryQty}
+                      min={0}
+                      max={10}
+                      onChange={(n) => update("cookieStrawberryQty", n)}
+                      ariaLabel="Cookie Strawberry quantity"
+                    />
+                  </div>
+                </div>
+              </div>
 
-  {/* ✅ errors / subtotal / rest stays SAME */}
-  {(touched.minOrder || touched.nothing) && errors.minOrder && <div className="errorBox">{errors.minOrder}</div>}
-  {touched.maxCookie && errors.maxCookie && <div className="errorBox">{errors.maxCookie}</div>}
-  {touched.nothing && errors.nothing && <div className="errorBox">{errors.nothing}</div>}
+              {(touched.minOrder || touched.nothing) && errors.minOrder && <div className="errorBox">{errors.minOrder}</div>}
+              {touched.maxCookie && errors.maxCookie && <div className="errorBox">{errors.maxCookie}</div>}
+              {touched.nothing && errors.nothing && <div className="errorBox">{errors.nothing}</div>}
 
-  <div className="policy">
-    <h3 className="h3">Subtotal</h3>
-    <p className="p">
-      <b>${totals.subtotal.toFixed(2)}</b>
-    </p>
-  </div>
+              <div className="policy">
+                <h3 className="h3">Subtotal</h3>
+                <p className="p">
+                  <b>${totals.subtotal.toFixed(2)}</b>
+                </p>
+              </div>
 
               <h3 className="h3">Customer Info</h3>
 
