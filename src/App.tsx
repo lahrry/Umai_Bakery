@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./App.css";
 
 type Tab = "home" | "order" | "contact";
@@ -197,6 +197,10 @@ export default function App() {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [statusMsg, setStatusMsg] = useState("");
 
+  useEffect(() => {
+  (window as any).gtag?.("event", "tab_view", { tab });
+}, [tab]);
+
   const pickupOptions = useMemo(() => generatePickupOptions(10), []);
 
   const totals = useMemo(() => {
@@ -269,6 +273,9 @@ export default function App() {
 
   const goTab = (t: Tab) => {
     setTab(t);
+
+    // ---- Google Analytics 4: 탭 전환 이벤트 전송 ----
+    (window as any).gtag?.("event", "tab_view", { tab: t });
 
     requestAnimationFrame(() => {
       const header = document.querySelector(".topbar") as HTMLElement | null;
