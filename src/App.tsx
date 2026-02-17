@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import "./App.css";
 
 type Tab = "home" | "order" | "contact";
@@ -165,6 +165,7 @@ function QtyStepper(props: {
       </button>
 
       <input
+        type="text"
         className="qtyInput"
         inputMode="numeric"
         pattern="[0-9]*"
@@ -197,9 +198,6 @@ export default function App() {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [statusMsg, setStatusMsg] = useState("");
 
-  useEffect(() => {
-  (window as any).gtag?.("event", "tab_view", { tab });
-}, [tab]);
 
   const pickupOptions = useMemo(() => generatePickupOptions(10), []);
 
@@ -634,6 +632,7 @@ export default function App() {
 
               <div className="policy">
                 <h3 className="h3">Payment</h3>
+                <img className="venmo" src="/menu/venmo.jpg" alt="umai venmo" />
                 <p className="p">
                   <b>Venmo:</b> @umai__dubai (Umai Bakery) <br />
                   * There are two underscores, not one. (“__”) <br />
