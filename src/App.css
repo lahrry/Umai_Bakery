@@ -531,8 +531,8 @@ input[type="number"]::-webkit-inner-spin-button{
   font-size: 16px;
 }
 .venmo {
-  width: 300px;     /* 원하는 크기로 조절 */
-  max-width: 300%;
+  width: 200px;     /* 원하는 크기로 조절 */
+  max-width: 200%;
   height: auto;
   display: block;
   margin: 8px 0 12px;
