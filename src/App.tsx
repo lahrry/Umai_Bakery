@@ -95,11 +95,17 @@ function formatISODate(d: Date) {
 function formatShort(d: Date) {
   return `${d.getMonth() + 1}/${d.getDate()}`;
 }
+
 const CLOSED_DATES = [
-  "2026-03-14",
   "2026-03-20",
   "2026-03-21",
 ];
+
+const SPECIAL_PICKUPS: Record<string, { label: string }> = {
+  "2026-03-14": {
+    label: "Sat / Convoy / 5:00–5:30 PM",
+  },
+};
 
 function generatePickupOptions(weeksAhead = 8) {
   const today = startOfDay(new Date());
@@ -107,7 +113,6 @@ function generatePickupOptions(weeksAhead = 8) {
 
   const dow = today.getDay(); // Sun=0 ... Sat=6
 
-  // 이번 주 금요일/토요일 날짜 계산
   const daysUntilFriday = (5 - dow + 7) % 7;
   const thisFriday = addDays(today, daysUntilFriday);
   const thisSaturday = addDays(thisFriday, 1);
@@ -116,20 +121,24 @@ function generatePickupOptions(weeksAhead = 8) {
     const fri = addDays(thisFriday, 7 * w);
     const sat = addDays(thisSaturday, 7 * w);
 
-    // ---- 컷오프 규칙 ----
-    // 목요일에 주문하면 이번주 금요일 픽업 불가
-    // 금요일에 주문하면 이번주 토요일 픽업 불가
     const blockThisWeekFriday = w === 0 && dow === 4; // Thu
     const blockThisWeekSaturday = w === 0 && dow === 5; // Fri
+
+    const friISO = formatISODate(fri);
+    const satISO = formatISODate(sat);
 
     if (
       fri >= today &&
       !blockThisWeekFriday &&
-      !CLOSED_DATES.includes(formatISODate(fri))
+      !CLOSED_DATES.includes(friISO)
     ) {
+      const special = SPECIAL_PICKUPS[friISO];
+
       options.push({
-        value: `FRI|${formatISODate(fri)}`,
-        label: `${formatShort(fri)} · ${PICKUP.friday.label}`,
+        value: `FRI|${friISO}`,
+        label: `${formatShort(fri)} · ${
+          special ? special.label : PICKUP.friday.label
+        }`,
         detail: `${PICKUP.friday.place} — ${PICKUP.friday.address}`,
       });
     }
@@ -137,11 +146,15 @@ function generatePickupOptions(weeksAhead = 8) {
     if (
       sat >= today &&
       !blockThisWeekSaturday &&
-      !CLOSED_DATES.includes(formatISODate(sat))
+      !CLOSED_DATES.includes(satISO)
     ) {
+      const special = SPECIAL_PICKUPS[satISO];
+
       options.push({
-        value: `SAT|${formatISODate(sat)}`,
-        label: `${formatShort(sat)} · ${PICKUP.saturday.label}`,
+        value: `SAT|${satISO}`,
+        label: `${formatShort(sat)} · ${
+          special ? special.label : PICKUP.saturday.label
+        }`,
         detail: `${PICKUP.saturday.place} — ${PICKUP.saturday.address}`,
       });
     }
