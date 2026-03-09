@@ -95,6 +95,11 @@ function formatISODate(d: Date) {
 function formatShort(d: Date) {
   return `${d.getMonth() + 1}/${d.getDate()}`;
 }
+const CLOSED_DATES = [
+  "2026-03-14",
+  "2026-03-20",
+  "2026-03-21",
+];
 
 function generatePickupOptions(weeksAhead = 8) {
   const today = startOfDay(new Date());
@@ -117,7 +122,11 @@ function generatePickupOptions(weeksAhead = 8) {
     const blockThisWeekFriday = w === 0 && dow === 4; // Thu
     const blockThisWeekSaturday = w === 0 && dow === 5; // Fri
 
-    if (fri >= today && !blockThisWeekFriday) {
+    if (
+      fri >= today &&
+      !blockThisWeekFriday &&
+      !CLOSED_DATES.includes(formatISODate(fri))
+    ) {
       options.push({
         value: `FRI|${formatISODate(fri)}`,
         label: `${formatShort(fri)} · ${PICKUP.friday.label}`,
@@ -125,7 +134,11 @@ function generatePickupOptions(weeksAhead = 8) {
       });
     }
 
-    if (sat >= today && !blockThisWeekSaturday) {
+    if (
+      sat >= today &&
+      !blockThisWeekSaturday &&
+      !CLOSED_DATES.includes(formatISODate(sat))
+    ) {
       options.push({
         value: `SAT|${formatISODate(sat)}`,
         label: `${formatShort(sat)} · ${PICKUP.saturday.label}`,
